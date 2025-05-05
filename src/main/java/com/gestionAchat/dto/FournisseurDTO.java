@@ -1,7 +1,5 @@
 package com.gestionAchat.dto;
 
-
-
 import lombok.Data;
 
 /**

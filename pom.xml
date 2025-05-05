@@ -65,6 +65,11 @@
 			<artifactId>FirstProject_SpringBoot</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+    		<groupId>org.modelmapper</groupId>
+    		<artifactId>modelmapper</artifactId>
+    		<version>3.1.1</version>
+		</dependency>
 	</dependencies>
 
 	<build>
