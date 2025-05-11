@@ -1,17 +1,35 @@
-<div>
-  <h3>{{ commande.id ? 'Modifier la Commande' : 'Ajouter une Commande' }}</h3>
-  <form (ngSubmit)="saveCommande()">
-    <label for="fournisseurId">Fournisseur ID:</label>
-    <input id="fournisseurId" type="number" [(ngModel)]="commande.fournisseurId" name="fournisseurId" required />
+<div class="form-container">
+  <h3 class="form-title">{{ commande.id ? 'Modifier la Commande' : 'Ajouter une Commande' }}</h3>
+  <form (ngSubmit)="saveCommande()" class="form-content">
+    <!-- Dropdown for selecting Fournisseur -->
+    <div class="form-group">
+      <label for="fournisseurId">Fournisseur:</label>
+      <select id="fournisseurId" [(ngModel)]="commande.fournisseurId" name="fournisseurId" required>
+        <option *ngFor="let fournisseur of fournisseurs" [value]="fournisseur.id">
+          {{ fournisseur.nom }}
+        </option>
+      </select>
+    </div>
 
-    <label for="date">Date:</label>
-    <input id="date" type="date" [(ngModel)]="commande.date" name="date" required />
+    <!-- Dropdown for selecting Statut -->
+    <div class="form-group">
+      <label for="statut">Statut:</label>
+      <select id="statut" [(ngModel)]="commande.statut" name="statut" required>
+        <option *ngIf="commande.statut === 'En cours'" value="En cours">En cours</option>
+        <option value="Annulée">Annulée</option>
+        <option value="Reçue">Reçue</option>
+        <option value="Refusée">Refusée</option>
+      </select>
+    </div>
 
-    <label for="statut">Statut:</label>
-    <input id="statut" type="text" [(ngModel)]="commande.statut" name="statut" required />
+    <!-- Date input -->
+    <div class="form-group">
+      <label for="date">Date:</label>
+      <input id="date" type="date" [(ngModel)]="commande.date" name="date" required />
+    </div>
 
-    <h4>Lignes de Commande</h4>
-    <table>
+    <h4 class="section-title">Lignes de Commande</h4>
+    <table class="styled-table">
       <thead>
         <tr>
           <th>Produit</th>
@@ -22,16 +40,29 @@
       </thead>
       <tbody>
         <tr *ngFor="let ligne of lignes; let i = index">
-          <td><input type="text" [(ngModel)]="ligne.produit" name="produit{{ i }}" required /></td>
+          <!-- Dropdown pour sélectionner un produit -->
+          <td>
+            <select [(ngModel)]="ligne.produit" name="produit{{ i }}" (change)="updatePrixUnitaire(ligne)" required>
+              <option *ngFor="let produit of produits" [value]="produit.nom">
+                {{ produit.nom }}
+              </option>
+            </select>
+          </td>
+          <!-- Champ pour la quantité -->
           <td><input type="number" [(ngModel)]="ligne.quantite" name="quantite{{ i }}" required /></td>
-          <td><input type="number" [(ngModel)]="ligne.prixUnitaire" name="prixUnitaire{{ i }}" required /></td>
-          <td><button type="button" (click)="removeLigne(i)">Supprimer</button></td>
+          <!-- Champ pour le prix unitaire (lecture seule) -->
+          <td><input type="number" [(ngModel)]="ligne.prixUnitaire" name="prixUnitaire{{ i }}" readonly /></td>
+          <!-- Bouton pour supprimer la ligne -->
+          <td><button type="button" class="btn delete-btn" (click)="removeLigne(i)">Supprimer</button></td>
+        </tr>
+        <tr *ngIf="lignes.length === 0">
+          <td colspan="4" class="empty-message">Aucune ligne de commande ajoutée.</td>
         </tr>
       </tbody>
     </table>
-    <button type="button" (click)="addLigne()">Ajouter Ligne</button>
+    <button type="button" class="btn add-btn" (click)="addLigne()">Ajouter Ligne de Commande</button>
 
-    <h4>Montant Total: {{ montantTotal | currency }}</h4>
-    <button type="submit">Enregistrer</button>
+    <h4 class="total-amount">Montant Total: {{ montantTotal | currency }}</h4>
+    <button type="submit" class="btn submit-btn">Enregistrer</button>
   </form>
 </div>

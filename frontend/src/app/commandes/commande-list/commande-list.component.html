@@ -1,6 +1,7 @@
-<h2>Liste des Commandes d'Achat</h2>
+<h2 class="title">Liste des Commandes d'Achat</h2>
 <button routerLink="/commande-form" class="add-btn">Ajouter une commande</button>
-<table>
+
+<table class="styled-table">
   <thead>
     <tr>
       <th>ID</th>
@@ -12,13 +13,45 @@
   <tbody>
     <tr *ngFor="let commande of commandes">
       <td>{{ commande.id }}</td>
-      <td>{{ commande.fournisseurId }}</td>
+      <td>{{ getFournisseurNom(commande.fournisseurId) }}</td>
       <td>{{ commande.montant | currency }}</td>
       <td>
-        <button class="btn" (click)="commande.id ? deleteCommande(commande.id) : null">Supprimer</button>        
-        <button [routerLink]="['/commande-form', commande.id]">Modifier</button>
+        <button class="btn delete-btn" (click)="commande.id ? deleteCommande(commande.id) : null">Supprimer</button>
+        <button class="btn edit-btn" [routerLink]="['/commande-form', commande.id]">Modifier</button>
+        <button class="btn details-btn" (click)="afficherDetails(commande)">Afficher</button>
       </td>
     </tr>
   </tbody>
 </table>
-<button routerLink="/commande-form">Ajouter une commande</button>
+
+<!-- Popup pour les détails de la commande -->
+<div class="modal" *ngIf="commandeSelectionnee">
+  <div class="modal-content">
+    <span class="close-btn" (click)="fermerDetails()">&times;</span>
+    <h3>Détails de la Commande</h3>
+    <p><strong>ID:</strong> {{ commandeSelectionnee.id }}</p>
+    <p><strong>Fournisseur:</strong> {{ getFournisseurNom(commandeSelectionnee.fournisseurId) }}</p>
+    <p><strong>Date:</strong> {{ commandeSelectionnee.date }}</p>
+    <p><strong>Statut:</strong> {{ commandeSelectionnee.statut }}</p>
+    <h4>Lignes de Commande</h4>
+    <table class="details-table">
+      <thead>
+        <tr>
+          <th>Produit</th>
+          <th>Quantité</th>
+          <th>Prix Unitaire</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let ligne of commandeSelectionnee.lignes">
+          <td>{{ ligne.produit }}</td>
+          <td>{{ ligne.quantite }}</td>
+          <td>{{ ligne.prixUnitaire | currency }}</td>
+          <td>{{ ligne.quantite * ligne.prixUnitaire | currency }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <p><strong>Montant Total:</strong> {{ commandeSelectionnee.montant | currency }}</p>
+  </div>
+</div>

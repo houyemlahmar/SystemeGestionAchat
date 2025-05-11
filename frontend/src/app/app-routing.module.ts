@@ -17,8 +17,6 @@ const routes: Routes = [
   { path: 'commandes', component: CommandeListComponent },
   { path: 'commande-form', component: CommandeFormComponent },
   { path: 'commande-form/:id', component: CommandeFormComponent },
-  { path: 'lignes', component: LigneListComponent },
-  { path: 'ligne-form', component: LigneFormComponent },
   { path: 'historiques', component: HistoriqueListComponent },
   { path: '', redirectTo: '/home', pathMatch: 'full' },
   { path: '**', redirectTo: '/home' }

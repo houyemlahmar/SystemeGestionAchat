@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommandeAchat } from '../../models/CommandeAchat.model';
 import { CommandeService } from '../../services/commande.service';
+import { FournisseurService } from '../../services/fournisseur.service';
 
 @Component({
   selector: 'app-commande-list',
@@ -10,17 +11,40 @@ import { CommandeService } from '../../services/commande.service';
 })
 export class CommandeListComponent implements OnInit {
   commandes: CommandeAchat[] = [];
+  fournisseurs: any[] = []; // Liste des fournisseurs
+  commandeSelectionnee: CommandeAchat | null = null; // Commande sélectionnée pour afficher les détails
 
-  constructor(private commandeService: CommandeService) {}
+  constructor(
+    private commandeService: CommandeService,
+    private fournisseurService: FournisseurService
+  ) {}
 
   ngOnInit(): void {
     this.loadCommandes();
+    this.loadFournisseurs();
   }
 
   loadCommandes(): void {
     this.commandeService.getAll().subscribe((data) => {
       this.commandes = data;
     });
+  }
+
+  loadFournisseurs(): void {
+    this.fournisseurService.getFournisseurs().subscribe((data) => {
+      this.fournisseurs = data;
+    });
+  }
+  getFournisseurNom(fournisseurId: number | undefined): string {
+    const fournisseur = this.fournisseurs.find((f) => f.id === fournisseurId);
+    return fournisseur ? fournisseur.nom : 'Inconnu';
+  }
+
+  afficherDetails(commande: CommandeAchat): void {
+    this.commandeSelectionnee = commande;
+  }
+  fermerDetails(): void {
+    this.commandeSelectionnee = null;
   }
 
   deleteCommande(id: number | undefined): void {

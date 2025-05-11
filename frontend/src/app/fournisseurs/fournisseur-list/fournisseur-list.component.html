@@ -1,5 +1,5 @@
 <div class="list-container">
-  <h3>Liste des Fournisseurs</h3>
+  <h3 class="title">Liste des Fournisseurs</h3>
   <button class="add-btn" (click)="addFournisseur()">Ajouter Fournisseur</button>
   <table class="styled-table">
     <thead>
@@ -24,11 +24,13 @@
         <td>{{ fournisseur.qualiteService }}</td>
         <td>⭐ {{ fournisseur.note }}</td>
         <td>
-          <button class="edit-btn" (click)="editFournisseur(fournisseur)">Modifier</button>
-          <button class="btn" (click)="fournisseur.id ? deleteFournisseur(fournisseur.id) : null">Supprimer</button>
+          <button class="btn edit-btn" (click)="editFournisseur(fournisseur)">Modifier</button>
+          <button class="btn delete-btn" (click)="fournisseur.id ? deleteFournisseur(fournisseur.id) : null">Supprimer</button>
         </td>
+      </tr>
+      <tr *ngIf="fournisseurs.length === 0">
+        <td colspan="8" class="empty-message">Aucun fournisseur trouvé.</td>
       </tr>
     </tbody>
   </table>
 </div>
-
