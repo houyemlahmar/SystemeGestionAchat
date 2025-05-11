@@ -11,6 +11,7 @@ import com.gestionAchat.service.FournisseurService;
 
 
 @RestController
+@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/api/fournisseurs")
 public class FournisseurController {
 

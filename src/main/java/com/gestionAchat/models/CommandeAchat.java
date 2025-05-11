@@ -17,7 +17,8 @@ import lombok.Data;
 @Entity
 @Data
 public class CommandeAchat {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id 
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
     private Fournisseur fournisseur;
@@ -28,6 +29,15 @@ public class CommandeAchat {
     @OneToMany(mappedBy = "commande", cascade = CascadeType.PERSIST)
     private List<LigneCommandeAchat> lignes = new ArrayList<>();
 
+    @OneToMany(mappedBy = "commande", cascade = CascadeType.PERSIST)
+    private List<HistoriqueAchats> historiques = new ArrayList<>();
+
+    public void calculateMontant() {
+        this.montant = lignes.stream()
+                .mapToDouble(ligne -> ligne.getPrixUnitaire() * ligne.getQuantite())
+                .sum();
+    }
+    
     // Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -41,4 +51,6 @@ public class CommandeAchat {
     public void setMontant(Double montant) { this.montant = montant; }
     public List<LigneCommandeAchat> getLignes() { return lignes; }
     public void setLignes(List<LigneCommandeAchat> lignes) { this.lignes = lignes; }
+    public List<HistoriqueAchats> getHistoriques() { return historiques; }
+    public void setHistoriques(List<HistoriqueAchats> historiques) { this.historiques = historiques; }
 }

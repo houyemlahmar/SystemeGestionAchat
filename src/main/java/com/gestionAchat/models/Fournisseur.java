@@ -3,7 +3,6 @@ package com.gestionAchat.models;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -16,13 +15,18 @@ import lombok.Data;
 @Entity
 @Data
 public class Fournisseur {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id 
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nom;
-    private String contact;
+    private Long numero;
+    private String email;
+    private String adresse;
     private String qualiteService;
     private Double note;
-
+    
+   
+    
     @OneToMany(mappedBy = "fournisseur", cascade = CascadeType.PERSIST)
     private List<CommandeAchat> commandes = new ArrayList<>();
 
@@ -34,8 +38,12 @@ public class Fournisseur {
     public void setId(Long id) { this.id = id; }
     public String getNom() { return nom; }
     public void setNom(String nom) { this.nom = nom; }
-    public String getContact() { return contact; }
-    public void setContact(String contact) { this.contact = contact; }
+    public Long getNumero() { return numero; }
+    public void setNumero(Long numero) { this.numero = numero; }
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+    public String getAdresse() { return adresse; }
+    public void setAdresse(String adresse) { this.adresse = adresse; }
     public String getQualiteService() { return qualiteService; }
     public void setQualiteService(String qualiteService) { this.qualiteService = qualiteService; }
     public Double getNote() { return note; }

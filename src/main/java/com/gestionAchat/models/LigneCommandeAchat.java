@@ -1,6 +1,7 @@
 package com.gestionAchat.models;
 
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -13,8 +14,11 @@ public class LigneCommandeAchat {
     @Id 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    
     @ManyToOne
+    @JoinColumn(name = "commande_id")
     private CommandeAchat commande;
+    
     private String produit;
     private int quantite;
     private double prixUnitaire;

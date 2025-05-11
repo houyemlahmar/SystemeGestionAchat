@@ -8,8 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.gestionAchat.dto.HistoriqueAchatDTO;
+import com.gestionAchat.models.CommandeAchat;
 import com.gestionAchat.models.Fournisseur;
 import com.gestionAchat.models.HistoriqueAchats;
+import com.gestionAchat.repository.CommandeAchatRepository;
 import com.gestionAchat.repository.HistoriqueAchatRepository;
 
 @Service
@@ -17,6 +19,8 @@ public class HistoriqueAchatService {
 
     @Autowired private HistoriqueAchatRepository repository;
     @Autowired private ModelMapper modelMapper;
+    @Autowired private CommandeAchatRepository commandeRepo;
+
 
     public List<HistoriqueAchatDTO> getAll() {
         return repository.findAll().stream()
@@ -30,22 +34,7 @@ public class HistoriqueAchatService {
             .orElse(null);
     }
 
-    public HistoriqueAchatDTO save(HistoriqueAchatDTO dto) {
-        HistoriqueAchats entity = fromDTO(dto);
-        HistoriqueAchats saved = repository.save(entity);
-        return toDTO(saved);
-    }
 
-    public HistoriqueAchatDTO update(Long id, HistoriqueAchatDTO dto) {
-        HistoriqueAchats existing = repository.findById(id).orElse(null);
-        if (existing != null) {
-            HistoriqueAchats updatedEntity = fromDTO(dto);
-            updatedEntity.setId(id); // On garde l'ID existant
-            HistoriqueAchats saved = repository.save(updatedEntity);
-            return toDTO(saved);
-        }
-        return null;
-    }
 
     public void delete(Long id) {
         repository.deleteById(id);
@@ -61,11 +50,24 @@ public class HistoriqueAchatService {
 
     private HistoriqueAchats fromDTO(HistoriqueAchatDTO dto) {
         HistoriqueAchats h = modelMapper.map(dto, HistoriqueAchats.class);
+
         if (dto.getFournisseurId() != null) {
             Fournisseur f = new Fournisseur();
             f.setId(dto.getFournisseurId());
             h.setFournisseur(f);
         }
+
+        if (dto.getCommandeId() != null) {
+            CommandeAchat commande = commandeRepo.findById(dto.getCommandeId()).orElse(null);
+            if (commande != null) {
+                h.setCommande(commande);
+                h.setDelaiLivraison(
+                    java.time.temporal.ChronoUnit.DAYS.between(commande.getDate(), java.time.LocalDate.now())
+                );
+            }
+        }
+
         return h;
     }
+
 }

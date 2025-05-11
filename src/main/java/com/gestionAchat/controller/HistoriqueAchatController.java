@@ -7,10 +7,11 @@ import org.springframework.web.bind.annotation.*;
 
 
 import com.gestionAchat.dto.HistoriqueAchatDTO;
-import com.gestionAchat.models.HistoriqueAchats;
 import com.gestionAchat.service.HistoriqueAchatService;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:4200")
+
 @RequestMapping("/api/historiques")
 public class HistoriqueAchatController {
     @Autowired private HistoriqueAchatService service;
@@ -25,15 +26,6 @@ public class HistoriqueAchatController {
         return service.getById(id);
     }
 
-    @PostMapping
-    public HistoriqueAchatDTO save(@RequestBody HistoriqueAchatDTO dto) {
-        return service.save(dto);
-    }
-    
-    @PutMapping("/{id}")
-    public HistoriqueAchatDTO update(@PathVariable Long id, @RequestBody HistoriqueAchatDTO dto) {
-        return service.update(id, dto);
-    }
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
         service.delete(id);

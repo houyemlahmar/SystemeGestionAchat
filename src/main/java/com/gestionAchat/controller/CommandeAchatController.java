@@ -9,6 +9,7 @@ import com.gestionAchat.dto.CommandeAchatDTO;
 import com.gestionAchat.service.CommandeAchatService;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/api/commandes")
 public class CommandeAchatController {
 

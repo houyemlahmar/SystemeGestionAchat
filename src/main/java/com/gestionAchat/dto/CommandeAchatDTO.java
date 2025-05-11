@@ -3,6 +3,8 @@ package com.gestionAchat.dto;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import lombok.Data;
 
 
@@ -10,6 +12,8 @@ import lombok.Data;
 public class CommandeAchatDTO {
     private Long id;
     private Long fournisseurId;
+    
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;
     private String statut;
     private Double montant;
