@@ -1,0 +1,37 @@
+<div>
+  <h3>{{ commande.id ? 'Modifier la Commande' : 'Ajouter une Commande' }}</h3>
+  <form (ngSubmit)="saveCommande()">
+    <label for="fournisseurId">Fournisseur ID:</label>
+    <input id="fournisseurId" type="number" [(ngModel)]="commande.fournisseurId" name="fournisseurId" required />
+
+    <label for="date">Date:</label>
+    <input id="date" type="date" [(ngModel)]="commande.date" name="date" required />
+
+    <label for="statut">Statut:</label>
+    <input id="statut" type="text" [(ngModel)]="commande.statut" name="statut" required />
+
+    <h4>Lignes de Commande</h4>
+    <table>
+      <thead>
+        <tr>
+          <th>Produit</th>
+          <th>Quantité</th>
+          <th>Prix Unitaire</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let ligne of lignes; let i = index">
+          <td><input type="text" [(ngModel)]="ligne.produit" name="produit{{ i }}" required /></td>
+          <td><input type="number" [(ngModel)]="ligne.quantite" name="quantite{{ i }}" required /></td>
+          <td><input type="number" [(ngModel)]="ligne.prixUnitaire" name="prixUnitaire{{ i }}" required /></td>
+          <td><button type="button" (click)="removeLigne(i)">Supprimer</button></td>
+        </tr>
+      </tbody>
+    </table>
+    <button type="button" (click)="addLigne()">Ajouter Ligne</button>
+
+    <h4>Montant Total: {{ montantTotal | currency }}</h4>
+    <button type="submit">Enregistrer</button>
+  </form>
+</div>

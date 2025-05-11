@@ -1,0 +1,52 @@
+<div>
+  <h3>{{ fournisseur.id ? 'Modifier le Fournisseur' : 'Ajouter un Fournisseur' }}</h3>
+  <form #fournisseurForm="ngForm" (ngSubmit)="addOrUpdateFournisseur()" novalidate>
+
+    <!-- Nom -->
+    <label for="nom">Nom :</label>
+    <input id="nom" type="text" placeholder="Nom" [(ngModel)]="fournisseur.nom" name="nom" required />
+    <div *ngIf="fournisseurForm.controls['nom']?.invalid && fournisseurForm.controls['nom']?.touched" class="error">
+      Nom est requis
+    </div>
+
+    <!-- Numéro -->
+    <label for="numero">Numéro :</label>
+    <input id="numero" type="number" placeholder="Numéro" [(ngModel)]="fournisseur.numero" name="numero" required />
+    <div *ngIf="errorMessage.numero" class="error">{{ errorMessage.numero }}</div>
+
+    <!-- Email -->
+    <label for="email">Email :</label>
+    <input id="email" type="email" placeholder="Email" [(ngModel)]="fournisseur.email" name="email" required />
+    <div *ngIf="errorMessage.email" class="error">{{ errorMessage.email }}</div>
+
+    <!-- Adresse -->
+    <label for="adresse">Adresse :</label>
+    <input id="adresse" type="text" placeholder="Adresse" [(ngModel)]="fournisseur.adresse" name="adresse" />
+
+    <!-- Qualité de service -->
+    <label for="qualiteService">Qualité de Service :</label>
+    <select id="qualiteService" [(ngModel)]="fournisseur.qualiteService" name="qualiteService" required>
+      <option value="" disabled selected>Choisir une option</option>
+      <option value="Mauvaise">Mauvaise</option>
+      <option value="Moyenne">Moyenne</option>
+      <option value="Bien">Bien</option>
+      <option value="Très Bien">Très Bien</option>
+      <option value="Excellente">Excellente</option>
+    </select>
+
+    <div *ngIf="fournisseurForm.controls['qualiteService']?.invalid && fournisseurForm.controls['qualiteService']?.touched" class="error">
+      La qualité de service est requise.
+    </div>
+
+    <!-- Note -->
+    <label for="note">Note (0 - 5) :</label>
+    <input id="note" type="number" step="0.1" placeholder="Note" [(ngModel)]="fournisseur.note" name="note" max="5" />
+    <div *ngIf="errorMessage.note" class="error">{{ errorMessage.note }}</div>
+
+    <!-- Submit Button -->
+    <button type="submit" [disabled]="fournisseurForm.invalid">
+      {{ fournisseur.id ? 'Modifier' : 'Ajouter' }} Fournisseur
+    </button>
+
+  </form>
+</div>

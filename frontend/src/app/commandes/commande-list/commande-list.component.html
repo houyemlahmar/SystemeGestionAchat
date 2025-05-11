@@ -1,0 +1,24 @@
+<h2>Liste des Commandes d'Achat</h2>
+<button routerLink="/commande-form" class="add-btn">Ajouter une commande</button>
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Fournisseur</th>
+      <th>Montant</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let commande of commandes">
+      <td>{{ commande.id }}</td>
+      <td>{{ commande.fournisseurId }}</td>
+      <td>{{ commande.montant | currency }}</td>
+      <td>
+        <button class="btn" (click)="commande.id ? deleteCommande(commande.id) : null">Supprimer</button>        
+        <button [routerLink]="['/commande-form', commande.id]">Modifier</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<button routerLink="/commande-form">Ajouter une commande</button>
