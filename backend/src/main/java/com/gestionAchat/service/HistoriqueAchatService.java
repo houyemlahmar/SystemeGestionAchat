@@ -22,6 +22,12 @@ public class HistoriqueAchatService {
     @Autowired private CommandeAchatRepository commandeRepo;
 
 
+    public HistoriqueAchatDTO createHistorique(HistoriqueAchatDTO dto) {
+        HistoriqueAchats entity = fromDTO(dto);
+        HistoriqueAchats savedEntity = repository.save(entity);
+        return toDTO(savedEntity);
+    }
+
     public List<HistoriqueAchatDTO> getAll() {
         return repository.findAll().stream()
             .map(this::toDTO)
@@ -48,26 +54,26 @@ public class HistoriqueAchatService {
         return dto;
     }
 
-    private HistoriqueAchats fromDTO(HistoriqueAchatDTO dto) {
-        HistoriqueAchats h = modelMapper.map(dto, HistoriqueAchats.class);
-
-        if (dto.getFournisseurId() != null) {
-            Fournisseur f = new Fournisseur();
-            f.setId(dto.getFournisseurId());
-            h.setFournisseur(f);
-        }
-
-        if (dto.getCommandeId() != null) {
-            CommandeAchat commande = commandeRepo.findById(dto.getCommandeId()).orElse(null);
-            if (commande != null) {
-                h.setCommande(commande);
-                h.setDelaiLivraison(
-                    java.time.temporal.ChronoUnit.DAYS.between(commande.getDate(), java.time.LocalDate.now())
-                );
-            }
-        }
-
-        return h;
-    }
+	private HistoriqueAchats fromDTO(HistoriqueAchatDTO dto) {
+	    HistoriqueAchats h = modelMapper.map(dto, HistoriqueAchats.class);
+	
+	    if (dto.getFournisseurId() != null) {
+	        Fournisseur f = new Fournisseur();
+	        f.setId(dto.getFournisseurId());
+	        h.setFournisseur(f);
+	    }
+	
+	    if (dto.getCommandeId() != null) {
+	        CommandeAchat commande = commandeRepo.findById(dto.getCommandeId()).orElse(null);
+	        if (commande != null) {
+	            h.setCommande(commande);
+	            h.setDelaiLivraison(
+	                java.time.temporal.ChronoUnit.DAYS.between(commande.getDate(), java.time.LocalDate.now())
+	            );
+	        }
+	    }
+	
+	    return h;
+	}
 
 }

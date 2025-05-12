@@ -4,11 +4,11 @@ import lombok.Data;
 
 @Data
 public class HistoriqueAchatDTO {
-    private Long id;
+	private Long id;
     private Long fournisseurId;
-    private Long commandeId; 
-
-    private long delaiLivraison;
+    private Long commandeId;
+    private String statut;
+    private Long delaiLivraison;
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -19,6 +19,9 @@ public class HistoriqueAchatDTO {
     public Long getCommandeId() { return commandeId; }
     public void setCommandeId(Long commandeId) { this.commandeId = commandeId; }
 
-    public long getDelaiLivraison() { return delaiLivraison; }
-    public void setDelaiLivraison(long delaiLivraison) { this.delaiLivraison = delaiLivraison; }
+    public String getstatut() { return statut; }
+    public void setstatut(String statut) { this.statut = statut; }
+
+    public Long getDelaiLivraison() { return delaiLivraison; }
+    public void setDelaiLivraison(Long delaiLivraison) { this.delaiLivraison = delaiLivraison; }
 }
