@@ -2,10 +2,8 @@ import { NgModule } from '@angular/core';
 import { FournisseurListComponent } from './fournisseurs/fournisseur-list/fournisseur-list.component';
 import { FournisseurFormComponent } from './fournisseurs/fournisseur-form/fournisseur-form.component';
 import { CommandeListComponent } from './commandes/commande-list/commande-list.component';
-import { LigneListComponent } from './lignes/ligne-list/ligne-list.component';
 import { CommandeFormComponent } from './commandes/commande-form/commande-form.component';
 import { HistoriqueListComponent } from './historiques/historique-list/historique-list.component';
-import { LigneFormComponent } from './lignes/ligne-form/ligne-form.component';
 import { RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [

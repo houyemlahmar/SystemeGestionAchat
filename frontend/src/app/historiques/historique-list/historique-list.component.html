@@ -1,1 +1,44 @@
-<p>historique-list works!</p>
+<div class="historique-container">
+  <h3>Historique des Achats</h3>
+
+  <!-- Filtres -->
+  <div class="filters">
+    <label for="fournisseur">Fournisseur:</label>
+    <input id="fournisseur" type="number" [(ngModel)]="filter.fournisseurId" (input)="applyFilter()" />
+
+    <label for="date">Date:</label>
+    <input id="date" type="date" [(ngModel)]="filter.date" (input)="applyFilter()" />
+
+    <label for="montant">Montant:</label>
+    <input id="montant" type="number" [(ngModel)]="filter.montant" (input)="applyFilter()" />
+  </div>
+
+  <!-- Table des achats -->
+  <table class="styled-table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Fournisseur</th>
+        <th>Produit</th>
+        <th>Quantité</th>
+        <th>Montant</th>
+        <th>Date</th>
+        <th>Délai Livraison</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let achat of filteredHistorique">
+        <td>{{ achat.id }}</td>
+        <td>{{ achat.fournisseurId }}</td>
+        <td>{{ achat.produit }}</td>
+        <td>{{ achat.quantite }}</td>
+        <td>{{ achat.montant | currency }}</td>
+        <td>{{ achat.date }}</td>
+        <td>{{ achat.delaiLivraison }} jours</td>
+      </tr>
+      <tr *ngIf="filteredHistorique.length === 0">
+        <td colspan="7" class="empty-message">Aucun achat trouvé.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

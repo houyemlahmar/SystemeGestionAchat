@@ -4,6 +4,7 @@ import { LigneCommandeAchat } from '../../models/LigneCommandeAchat.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommandeService } from '../../services/commande.service';
 import { FournisseurService } from '../../services/fournisseur.service';
+import { HistoriqueService } from '../../services/historique.service';
 
 @Component({
   selector: 'app-commande-form',
@@ -42,7 +43,9 @@ export class CommandeFormComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private commandeService: CommandeService,
-    private fournisseurService: FournisseurService // Injection du service fournisseur
+    private fournisseurService: FournisseurService,
+    private historiqueAchatService: HistoriqueService,
+
   ) {}
 
   ngOnInit(): void {
@@ -92,49 +95,82 @@ export class CommandeFormComponent implements OnInit {
   }
 
   saveCommande(): void {
-    // Recalculer le montant avant d'envoyer la commande
-    this.calculateTotal();
+  // Recalculer le montant avant d'envoyer la commande
+  this.calculateTotal();
 
-    this.commande.lignes = this.lignes.map(ligne => ({
-      id: ligne.id && ligne.id > 0 ? ligne.id : undefined,
-      produit: ligne.produit,
-      quantite: ligne.quantite,
-      prixUnitaire: ligne.prixUnitaire,
-      commandeId: this.commande.id || 0
-    }));
+  this.commande.lignes = this.lignes.map(ligne => ({
+    id: ligne.id && ligne.id > 0 ? ligne.id : undefined,
+    produit: ligne.produit,
+    quantite: ligne.quantite,
+    prixUnitaire: ligne.prixUnitaire,
+    commandeId: this.commande.id || 0
+  }));
 
-    // Conversion de la date au format 'YYYY-MM-DD'
-    const formattedDate = this.commande.date instanceof Date 
-      ? this.commande.date.toISOString().substring(0, 10) 
-      : this.commande.date;
+  // Conversion de la date au format 'YYYY-MM-DD'
+  const formattedDate = this.commande.date instanceof Date 
+    ? this.commande.date.toISOString().substring(0, 10) 
+    : this.commande.date;
 
-    const commandeToSave: CommandeAchat = {
-      ...this.commande,
-      date: new Date(formattedDate) // Conversion en Date
-    };
+  const commandeToSave: CommandeAchat = {
+    ...this.commande,
+    date: new Date(formattedDate)// Conversion en Date
+  };
 
-    console.log("Commande envoyée :", commandeToSave);
+  console.log("Commande envoyée :", commandeToSave);
 
-    this.commandeService.save(commandeToSave).subscribe({
-      next: (savedCommande) => {
-        console.log('Commande enregistrée avec succès', savedCommande);
+  this.commandeService.save(commandeToSave).subscribe({
+    next: (savedCommande) => {
+      console.log('Commande enregistrée avec succès', savedCommande);
 
-        // Ensure `savedCommande.id` is defined before updating `ligne.commandeId`
-        if (savedCommande.id !== undefined) {
-          this.lignes.forEach(ligne => {
-            ligne.commandeId = savedCommande.id!; // Assert that `id` is not undefined
+      // Vérifier si le statut est "Reçue" pour sauvegarder dans l'historique
+      if (commandeToSave.statut === 'Reçue') {
+        const dateReçue = new Date().toISOString().substring(0, 10); // Date actuelle
+        const delaiLivraison = this.calculateDelaiLivraison(commandeToSave.date.toISOString().substring(0, 10), dateReçue);
+
+        // Vérifier que fournisseurId est défini avant d'enregistrer dans l'historique
+        if (commandeToSave.fournisseurId !== undefined) {
+          this.lignes.forEach((ligne) => {
+            const historique = {
+              fournisseurId: commandeToSave.fournisseurId as number, // Forcer le type à `number`
+              produit: ligne.produit,
+              quantite: ligne.quantite,
+              delaiLivraison: delaiLivraison,
+              date: commandeToSave.date.toISOString().substring(0, 10), // Convertir en chaîne de caractères
+              montant: ligne.quantite * ligne.prixUnitaire
+            };
+
+            this.historiqueAchatService.saveHistorique(historique).subscribe(() => {
+              console.log('Historique enregistré pour le produit', ligne.produit);
+            });
           });
         } else {
-          console.error('Erreur : L\'ID de la commande enregistrée est undefined.');
+          console.error('Erreur : fournisseurId est undefined. Impossible d\'enregistrer dans l\'historique.');
         }
-
-        console.log('Lignes après mise à jour des IDs :', this.lignes);
-
-        this.router.navigate(['/commandes']);
-      },
-      error: (err) => {
-        console.error('Erreur lors de l\'enregistrement de la commande', err);
       }
-    });
+
+      // Mise à jour des lignes avec l'ID de la commande
+      if (savedCommande.id !== undefined) {
+        this.lignes.forEach(ligne => {
+          ligne.commandeId = savedCommande.id!; // Assert that `id` is not undefined
+        });
+      } else {
+        console.error('Erreur : L\'ID de la commande enregistrée est undefined.');
+      }
+
+      console.log('Lignes après mise à jour des IDs :', this.lignes);
+
+      this.router.navigate(['/commandes']);
+    },
+    error: (err) => {
+      console.error('Erreur lors de l\'enregistrement de la commande', err);
+    }
+  });
+}
+  // Calculer le délai de livraison
+  calculateDelaiLivraison(dateCommande: string, dateReçue: string): number {
+    const date1 = new Date(dateCommande);
+    const date2 = new Date(dateReçue);
+    const diffTime = Math.abs(date2.getTime() - date1.getTime());
+    return Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // Convertir en jours
   }
 }

@@ -7,4 +7,6 @@ export interface CommandeAchat {
   statut: string;
   montant: number;
   lignes?: LigneCommandeAchat[];
+  dateReçue?: string; // Date de changement de statut en "Reçue"
+
 }
